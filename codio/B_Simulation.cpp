@@ -1,98 +1,64 @@
-#include "Boid.hpp"
-Boid::Boid(float x,float y){
+#include <iostream>
+#include "B_Simulation.hpp"
 
-    coordinates= Vector(x,y);
-    speed=Vector (rand()%3,rand()%3);
+Simulation::Simulation(){
+ window.create(sf::VideoMode(window_x, window_y), "Boids");
+window.setFramerateLimit(60);
 };
 
 
 
-Vector Boid::Separation(const std::vector <Boid> ensamble){
-float sep_distance= 0.0001;//variabile da definire in input
-float sep_param= 0.001;   //variabile da definire in input
-Vector V_1{0,0};
-for (int i=0;i<ensamble.size();i++){
-    
-    if (coordinates.distance(ensamble[i].coordinates)<sep_distance)
-{
-    
-    Vector rule_1=coordinates.Sub_Vector(ensamble[i].coordinates);
-    V_1.Add_Vector(rule_1);
 
-}}
-V_1.Mul_Scalar(sep_param);
-return V_1;};
+void Simulation:: New_Boid(const Boid boid){ensamble.push_back(boid);};
+void Simulation::Run_Simulation(){
 
 
+   /* Simulation Simulazione;
+    Simulazione.Run_Simulation();
+    return 0;*/
+sf::Event event;
+//while(window.isOpen()){ 
 
+srand(time(NULL));
+for(int i=0;i<200;++i){
+    float Boid_spawn_x=rand()%window_x;
+    float Boid_spawn_y=rand()%window_y;
+    float v_spawn_x=rand()%17 -8;
+    float v_spawn_y=rand()%17 -8;
+    sf::CircleShape triangle(5,3);
 
-Vector Boid::Allignment(const std::vector <Boid> ensamble){
-    float near_condition=500.;
-float All_param= 1;
-int n_boids=0;
-Vector V_2{0,0};
-for (int i = 0; i <ensamble.size(); i++)
-{
-        if (coordinates.distance(ensamble[i].coordinates)<near_condition)
-{
-    
-    Vector rule_2=coordinates.Sub_Vector(ensamble[i].coordinates);
-    V_2.Add_Vector(rule_2);
-   
+    Boid bird(Boid_spawn_x,Boid_spawn_y,v_spawn_x, v_spawn_y);
+    triangle.setPosition(Boid_spawn_x,Boid_spawn_y);
+    triangle.setFillColor(sf::Color::Red);
+    ensamble.push_back(bird);
+    triangles.push_back(triangle);
 
-n_boids++;
-}
 
 }
-V_2.Mul_Scalar(All_param);
-V_2.Div_Scalar(n_boids-1);
-return V_2;
-};    
+//for (int i = 0; i < ensamble.size(); i++)
+     //{ ensamble[i].Play(ensamble);}
+while(window.isOpen()){ 
+while(window.pollEvent(event)){
+if (event.type==sf::Event::Closed){window.close();};}
 
 
+window.clear();
+Vector z={0,0};
+for (int i = 0; i < triangles.size(); i++) {
 
-Vector Boid::Cohesion(const std::vector <Boid> ensamble){
-float near_condition= 1;
-float coh_param= 0.001;
-int n_boids=0;
-Vector V_3{0,0};
-Vector C_mass{0,0};
-for (int i=0;i<ensamble.size();i++){
-    
-    if (coordinates.distance(ensamble[i].coordinates)<near_condition)
-{C_mass.Add_Vector(ensamble[i].coordinates);
-    n_boids++;
-    }
-} 
-C_mass.Div_Scalar(n_boids-1);
+    ensamble[i].Play(ensamble);
+    triangles[i].setPosition(ensamble[i].coordinates.x, ensamble[i].coordinates.y);
+    window.draw(triangles[i]); 
+ z.Add_Module(ensamble[i].speed);
 
-Vector rule_3= C_mass.Sub_Vector(coordinates);
-V_3.Add_Vector(C_mass);
-V_3.Mul_Scalar(coh_param);
-return V_3;
- };     
 
-void Boid::Apply_rules(const std::vector <Boid> ensamble ){
-    //speed.Add3_Vector(Allignment(ensamble),Separation(ensamble),Cohesion(ensamble));
-    speed.Add_Vector(Cohesion(ensamble));
-   // speed.control();
-    coordinates.Add_Vector(speed);
-};
-;
-void Boid::Pacman_effect(int window_x,
-int window_y){
-    if (coordinates.x<0){coordinates.x=window_x;}
-    if (coordinates.y<0){coordinates.y=window_y;}
-    if (coordinates.x>window_x){coordinates.x=1;}
-    if (coordinates.y>window_y){coordinates.y=1;}
+//std::cout<<ensamble[i].speed.x<<ensamble[i].speed.y<<std::endl;
+//std::cout<<triangles.size();
+//std::cout<<ensamble.size();
+};   
+std::cout<<(z.x/ensamble.size())<<' '<<(z.y/ensamble.size())<<std::endl;
 
-};
+window.display();
+}  
 
-void Boid::Play(const std::vector <Boid> ensamble)
-{
- Apply_rules(ensamble);
- Pacman_effect(1280,700);
-
-};
-
-//effetto pacman, prima sfml definire finestra ecc...
+}
