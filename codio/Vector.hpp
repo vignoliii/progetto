@@ -34,6 +34,7 @@ Vector Div_Scalar(const float param);
 double distance(const Vector v_2);
 double magnitude();
 void control();
+Vector Add_Module(const Vector v_add);
 
 };
 #endif
