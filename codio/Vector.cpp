@@ -10,6 +10,11 @@ Vector Vector::Add_Vector(const Vector v_add){
  y+=v_add.y;
 return{x,y};
 };
+Vector Vector::Add_Module(const Vector v_add){
+ x+=abs(v_add.x);
+ y+=abs(v_add.y);
+return{x,y};
+};
 
 void Vector::Add3_Vector(const Vector v_add1 ,const Vector v_add2,const Vector v_add3){
  x+=v_add1.x+v_add2.x+v_add3.x;
@@ -56,7 +61,7 @@ double d_x= x-v_2.x;
 
 double d_y= y-v_2.y;
 
-return sqrt(d_x*d_x+d_y*d_y);
+return sqrt((d_x*d_x)+(d_y*d_y));
 
 
 };  
@@ -67,14 +72,13 @@ return sqrt(mag2);
 };
 
 void Vector::control(){
-if (x>5)
-{x-=1;}
-if (x<-5)
-{x+=1;}
-
-if (y>5)
-{y-=1;}
-if (y<-5)
-{y+=1;}
-
+float maxspeed=4;
+if( magnitude()> maxspeed){
+x=(x/magnitude())*maxspeed;
+y=(y/(magnitude()))*maxspeed;
+}
+/*if (x<0.4)
+{x=1;}
+if (y<0.4)
+{y=-1;}*/
 };
